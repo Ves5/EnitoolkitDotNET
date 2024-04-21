@@ -1,0 +1,6 @@
+@Enitoolkit_HostAddress = http://localhost:5244
+
+GET {{Enitoolkit_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
