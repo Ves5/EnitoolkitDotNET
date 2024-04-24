@@ -1,0 +1,43 @@
+name: Build and Publish Enitoolkit Frontend
+
+on:
+  push:
+    branches: [ "release" ]
+
+jobs:
+  build-and-publish:
+    # if: contains(github.event.pull_request.labels.*.name, 'fe-update') && github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Get Version
+      id: get-version
+      uses: KageKirin/get-csproj-version@v1.0.0
+      with: 
+        file: Enitoolkit/Enitoolkit.csproj
+
+    - name: Print Version
+      env:
+        VERSION: ${{ steps.get-version.package_version.version }}
+      run: |
+        echo "Backend Version: $VERSION"
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Enitoolkit/Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/enitoolkitdotnet:latest,${{ secrets.DOCKER_USERNAME }}/enitoolkitdotnet:${{ steps.get-version.package_version.version }}
