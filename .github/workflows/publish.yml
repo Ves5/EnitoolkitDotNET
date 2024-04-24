@@ -1,4 +1,4 @@
-name: Build and Publish Enitoolkit Frontend
+name: Build and Publish Enitoolkit Backend
 
 on:
   push:
