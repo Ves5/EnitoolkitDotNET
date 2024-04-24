@@ -21,7 +21,8 @@ namespace Enitoolkit.Controllers
         [ActionName("version")]
         public IResult GetVersion()
         {
-            return Results.Ok(Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
+            var version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+            return Results.Ok(version.Contains("+") ? version.Split("+")[0] : version) ;
         }
 
         [HttpGet]
